@@ -45,6 +45,7 @@ function calculateGridSize(words) {
 function generateWordSearch(words, gridSize) {
     // gridSize ?? calculateGridSize(words);
     let grid = Array.from({ length: gridSize }, () => Array(gridSize).fill('-'));
+    unplacedwords = [];
 
     words.forEach(word => placeWordInGrid(word, grid, gridSize));
 

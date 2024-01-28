@@ -58,6 +58,9 @@ fetch("js/wordlist.json")
 function makeGrid(number){
   var grid = document.getElementById("grid-"+number);
   var wordlistGrid = document.getElementById("wordlist-"+number);
+  // console.log(wordlist);
+  // console.log(wordlistsize);
+  // console.log(wordlistmin);
   filtered_words = [];
     wordlist.forEach((word) => {
         //   console.log(word);
@@ -68,12 +71,12 @@ function makeGrid(number){
         });
     // from there we select 48 words at random
     filtered_words.sort(() => Math.random() - 0.5);
-    filtered_words = filtered_words.slice(0, 48);
+    // filtered_words = filtered_words.slice(0, 48);
     // console.log(filtered_words);
     // search = wordsearch(filtered_words, gridsize, gridsize);
     search = generateWordSearch(filtered_words, gridsize);
 
-    console.log(search);
+    // console.log(search);
     for(var i = 0; i < gridsize; i++) {
         // create a row
         var row = document.createElement("div");
@@ -131,7 +134,7 @@ function makeGrid(number){
     wordlistGrid.appendChild(row);
     }
     // show the print dialog
-    window.print();
+    // window.print();
 }
 
 
