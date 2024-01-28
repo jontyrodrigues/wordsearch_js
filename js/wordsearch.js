@@ -3,10 +3,10 @@ let search = {};
 let wordlist = [];
 
 
-var number = prompt("How many copies do you want to print?");
-var gridsize = prompt("What size of grid do you want?");
-var wordlistsize = prompt("What is the maximum size of word?");
-var wordlistmin = prompt("What is the minimum size of word?");
+var number = parseInt(prompt("How many copies do you want to print?"));
+var gridsize =  parseInt(prompt("What size of grid do you want?"));
+var wordlistsize =  parseInt(prompt("What is the maximum size of word?"));
+var wordlistmin =  parseInt(prompt("What is the minimum size of word?"));
 
 var dom = ``;
 
@@ -70,8 +70,10 @@ function makeGrid(number){
     filtered_words.sort(() => Math.random() - 0.5);
     filtered_words = filtered_words.slice(0, 48);
     // console.log(filtered_words);
-    search = wordsearch(filtered_words, gridsize, gridsize);
-    // console.log(search);
+    // search = wordsearch(filtered_words, gridsize, gridsize);
+    search = generateWordSearch(filtered_words, gridsize);
+
+    console.log(search);
     for(var i = 0; i < gridsize; i++) {
         // create a row
         var row = document.createElement("div");
@@ -101,7 +103,8 @@ function makeGrid(number){
       if(index > -1) {
           // filtered_words.splice(index, 1);
           // remove the word from the filtered_words
-          filtered_words.splice(index, 1);
+          filtered_words.splice(filtered_words.indexOf(word));
+          // filtered_words.splice(index, 1);
       }
     });
     for(var i = 0; i < 48; i += 6) {
