@@ -1,4 +1,5 @@
 var unplacedwords = [];
+var placedwords = [];
 
 function placeWordInGrid(word, grid, gridSize) {
     let directions = [[0, 1], [1, 0], [1, 1]]; // Right, Down, Diagonal
@@ -14,6 +15,7 @@ function placeWordInGrid(word, grid, gridSize) {
             for (let i = 0; i < word.length; i++) {
                 grid[row + i * direction[0]][col + i * direction[1]] = word[i];
             }
+            placedwords.push(word);
             placed = true;
         }
         attempts++;
@@ -46,6 +48,7 @@ function generateWordSearch(words, gridSize) {
     // gridSize ?? calculateGridSize(words);
     let grid = Array.from({ length: gridSize }, () => Array(gridSize).fill('-'));
     unplacedwords = [];
+    placedwords = []; 
 
     words.forEach(word => placeWordInGrid(word, grid, gridSize));
 
@@ -59,7 +62,8 @@ function generateWordSearch(words, gridSize) {
 
     return {
         grid: grid,
-        unplaced: unplacedwords
+        unplaced: unplacedwords,
+        words: placedwords
     }
 }
 

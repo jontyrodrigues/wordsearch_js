@@ -7,6 +7,8 @@ var number = parseInt(prompt("How many copies do you want to print?"));
 var gridsize =  parseInt(prompt("What size of grid do you want?"));
 var wordlistsize =  parseInt(prompt("What is the maximum size of word?"));
 var wordlistmin =  parseInt(prompt("What is the minimum size of word?"));
+var wordcount =  parseInt(prompt("How many words do you want?"));
+var moreorequal =  parseInt(prompt("Do you want words of more or equal size? 1 for more, 0 for equal"));
 
 var dom = ``;
 
@@ -19,7 +21,7 @@ for(var i = 0; i < number; i++) {
         </div>
         <div class="p-4">
             <h1 class="text-2xl m-auto text-center mb-4"> WordList </h1>
-            <div id="wordlist-${i}">
+            <div class="m-auto" style="width: 48rem;" id="wordlist-${i}">
 
             </div>
         </div>
@@ -33,7 +35,7 @@ for(var i = 0; i < number; i++) {
         </div>
         <div class="p-4">
             <h1 class="text-2xl m-auto text-center mb-4"> WordList </h1>
-            <div id="wordlist-${i}">
+            <div class="m-auto" style="width: 48rem;" id="wordlist-${i}">
 
             </div>
         </div>
@@ -58,23 +60,41 @@ fetch("js/wordlist.json")
 function makeGrid(number){
   var grid = document.getElementById("grid-"+number);
   var wordlistGrid = document.getElementById("wordlist-"+number);
-  // console.log(wordlist);
-  // console.log(wordlistsize);
-  // console.log(wordlistmin);
   filtered_words = [];
     wordlist.forEach((word) => {
-        //   console.log(word);
           if (word.length < wordlistsize && word.length > wordlistmin) {
-            // console.log(word);
             filtered_words.push(word);
           }
         });
-    // from there we select 48 words at random
-    filtered_words.sort(() => Math.random() - 0.5);
-    // filtered_words = filtered_words.slice(0, 48);
-    // console.log(filtered_words);
-    // search = wordsearch(filtered_words, gridsize, gridsize);
-    search = generateWordSearch(filtered_words, gridsize);
+    if (filtered_words.length < wordcount) {
+        wordcount = filtered_words.length;
+    }
+    let totalwords = 0;
+    var best = {};
+    search = {};
+    var starttime = new Date().getTime();
+    // end time is 10 seconds from now
+    var endtime = starttime + 10 * 1000;
+    while ((totalwords !== wordcount && moreorequal == 0) || (totalwords < wordcount && moreorequal == 1)){
+       filtered_words.sort(() => Math.random() - 0.5);
+       search = generateWordSearch(filtered_words, gridsize);
+       if(totalwords == 0){
+        best = search;
+       }
+       totalwords = search.words.length;
+      //  take the best grid i.e. the one with the most words
+        if (totalwords > best.words.length) {
+          best = search;
+        }
+        if (new Date().getTime() > endtime) {
+          search = best;
+          break;
+        }
+       if ((search.words.length == wordcount && moreorequal == 0) || (search.words.length >= wordcount && moreorequal == 1)){
+        break;
+      }
+    } 
+   
 
     // console.log(search);
     for(var i = 0; i < gridsize; i++) {
@@ -101,16 +121,7 @@ function makeGrid(number){
     // add border to the grid
     grid.className = "border-4 border-black flex flex-col justify-center items-center m-auto";
     grid.style = "height: "+gridsize*2+"rem; width: "+gridsize*2+"rem;";
-    filtered_words.forEach((word) => {
-      var index = search.unplaced.indexOf(word);
-      if(index > -1) {
-          // filtered_words.splice(index, 1);
-          // remove the word from the filtered_words
-          filtered_words.splice(filtered_words.indexOf(word));
-          // filtered_words.splice(index, 1);
-      }
-    });
-    for(var i = 0; i < 48; i += 6) {
+    for(var i = 0; i < search.words.length; i += 6) {
     var row = document.createElement("div");
     row.className = "row flex";
     // from search.unplaced we need to remove the words that are not in filtered_words
@@ -120,13 +131,13 @@ function makeGrid(number){
         cell.className = "h-8 w-32 flex justify-center items-center text-xl";
         // in each cell we need to add a word
         // if the length of filtered_words is less than i + j we add an empty cell
-        if (filtered_words.length - 1 < i + j) {
+        if (search.words.length - 1 < i + j) {
             var word = document.createTextNode("");
             cell.appendChild(word);
             row.appendChild(cell);
             continue;
         }else{
-            var word = document.createTextNode(filtered_words[i + j].toLowerCase());
+            var word = document.createTextNode(search.words[i + j].toLowerCase());
             cell.appendChild(word);
             row.appendChild(cell);
         }
